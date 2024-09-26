@@ -42,6 +42,10 @@ use AutoMapper\Tests\Fixtures\HasDateTimeWithNullValue;
 use AutoMapper\Tests\Fixtures\Issue111\Colour;
 use AutoMapper\Tests\Fixtures\Issue111\ColourTransformer;
 use AutoMapper\Tests\Fixtures\Issue111\FooDto;
+use AutoMapper\Tests\Fixtures\IssueCovariance\ExtendedA;
+use AutoMapper\Tests\Fixtures\IssueCovariance\ExtendedB;
+use AutoMapper\Tests\Fixtures\IssueCovariance\GenericA;
+use AutoMapper\Tests\Fixtures\IssueCovariance\GenericB;
 use AutoMapper\Tests\Fixtures\ObjectsUnion\Bar;
 use AutoMapper\Tests\Fixtures\ObjectsUnion\Foo;
 use AutoMapper\Tests\Fixtures\ObjectsUnion\ObjectsUnionProperty;
@@ -1602,5 +1606,15 @@ class AutoMapperTest extends AutoMapperBaseTest
             'bar' => 'bar',
             'foo' => ['foo1', 'foo2'],
         ], $array);
+    }
+
+    public function testCovariance(): void
+    {
+        $genericA = new GenericA();
+        $genericB = new GenericB();
+        $genericA->setB($genericB);
+        $extendedA = $this->autoMapper->map($genericA, ExtendedA::class);
+        self::assertInstanceOf(ExtendedA::class, $extendedA);
+        self::assertInstanceOf(ExtendedB::class, $extendedA->getB());
     }
 }
